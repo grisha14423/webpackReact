@@ -1,6 +1,7 @@
 import { useState } from "react"
-import './App.scss'
+import classes from './App.module.scss'
 import { BugButton } from "../providers/ErrorBoundary"
+import { Link, Outlet } from "react-router-dom"
 
 const App = () => {
   const [count, setCount] = useState(0)
@@ -10,9 +11,13 @@ const App = () => {
   return (
     <div>
       <div>Hello World</div>
+      <Link to={'/about'}>About</Link>
+      <br/>
+      <Link to={'/shop'}>shop</Link>
       <h3>{count}</h3>
-      <button onClick={handleIncrement}>increment</button>
+      <button className={classes.button} onClick={handleIncrement}>increment</button>
       <BugButton />
+      <Outlet/>
     </div>
   )
 }
