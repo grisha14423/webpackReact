@@ -9,5 +9,6 @@ export function buildDevServer(options: BuildOptions): DevServerConfiguration {
     client: {
       overlay: false, // Отключаем оверлей react для ошибок
     },
+    hot: true,
   }
 }

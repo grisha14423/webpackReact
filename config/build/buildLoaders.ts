@@ -1,6 +1,7 @@
 import MiniCssExtractPlugin from "mini-css-extract-plugin"
 import { ModuleOptions } from "webpack"
 import { BuildOptions } from "./types/types"
+import ReactRefreshTypeScript from "react-refresh-typescript"
 
 export function buildLoaders(options: BuildOptions): ModuleOptions["rules"] {
   const isDev = options.mode === "development"
@@ -12,6 +13,11 @@ export function buildLoaders(options: BuildOptions): ModuleOptions["rules"] {
         localIdentName: isDev ? "[path][name]__[local]" : "[hash:base64:8]",
       },
     },
+  }
+
+  const assetLoader = {
+    test: /\.(png|jpg|jpeg|gif)$/i,
+    type: "asset/resource",
   }
 
   const scssLoader = {
@@ -30,9 +36,41 @@ export function buildLoaders(options: BuildOptions): ModuleOptions["rules"] {
     // ts-loader умеет работать с jsx из коробки
     // Если не использовать, то нужен babel-loader
     test: /\.tsx?$/,
-    use: "ts-loader",
     exclude: /node_modules/,
+    use: [
+      {
+        loader: "ts-loader",
+        options: {
+          transpileOnly: true, // Убирает проверку типов, убирает ошибки ts, ускоряет сборку. Может работать с ForkTsCheckerWebpackPlugin (отдельный процесс)
+          getCustomTransformers: () => ({
+            before: [isDev && ReactRefreshTypeScript()].filter(Boolean),
+          }),
+        },
+      },
+    ],
   }
 
-  return [scssLoader, tsLoader]
+  const svgrLoader = {
+    test: /\.svg$/i,
+    use: [
+      {
+        loader: "@svgr/webpack",
+        options: {
+          icon: true,
+          svgoConfig: {
+            plugins: [
+              {
+                name: "convertColors",
+                params: {
+                  currentColor: true, // Для удобной работы с цветами (меняет для всей картинки)
+                },
+              },
+            ],
+          },
+        },
+      },
+    ],
+  }
+
+  return [scssLoader, tsLoader, assetLoader, svgrLoader]
 }
