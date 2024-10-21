@@ -9,6 +9,6 @@ export function buildDevServer(options: BuildOptions): DevServerConfiguration {
     client: {
       overlay: false, // Отключаем оверлей react для ошибок
     },
-    hot: true,
+    hot: true, // hot reload js, но для react нужно еще ReactRefreshWebpackPlugin
   }
 }

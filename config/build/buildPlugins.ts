@@ -1,13 +1,12 @@
-import webpack, { DefinePlugin } from "webpack"
+import webpack, { DefinePlugin, Configuration } from "webpack"
 import path from "path"
 import HtmlWebpackPlugin from "html-webpack-plugin"
 import MiniCssExtractPlugin from "mini-css-extract-plugin"
-import { Configuration } from "webpack"
-import { BuildOptions } from "./types/types"
 import { BundleAnalyzerPlugin } from "webpack-bundle-analyzer"
 import ForkTsCheckerWebpackPlugin from "fork-ts-checker-webpack-plugin"
 import ReactRefreshWebpackPlugin from "@pmmmwh/react-refresh-webpack-plugin"
 import CopyPlugin from "copy-webpack-plugin"
+import { BuildOptions } from "./types/types"
 
 export function buildPlugins(options: BuildOptions): Configuration["plugins"] {
   const isDev = options.mode === "development"
@@ -26,7 +25,11 @@ export function buildPlugins(options: BuildOptions): Configuration["plugins"] {
   if (isDev) {
     plugins.push(new webpack.ProgressPlugin()) // Не рекомендуют в проде, так как может сильно замедлять. Показывает процент сборки
     plugins.push(new ForkTsCheckerWebpackPlugin()) // Проверка типов в отдельном процессе, ускоряет сборку, не кладет приложение
-    plugins.push(new ReactRefreshWebpackPlugin()) // Для hmr react ts
+    plugins.push(
+      new ReactRefreshWebpackPlugin({
+        overlay: false, // Отключает overlay ошибок
+      })
+    ) // Для hmr react ts
   }
 
   if (isProd) {

@@ -5,6 +5,7 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom"
 import { LazyAbout } from "./pages/about/About.lazy"
 import { Shop } from "@/pages/shop"
 import { Suspense } from "react"
+import { PageError } from "./providers/ErrorBoundary/ui/PageError"
 
 const root = document.getElementById("root")
 
@@ -18,6 +19,7 @@ const router = createBrowserRouter([
   {
     path: "/",
     element: <App />,
+    errorElement: <PageError />, // Для babel, без него нормально отрабатывает error boundary
     children: [
       {
         path: "/about",

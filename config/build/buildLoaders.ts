@@ -1,7 +1,8 @@
 import MiniCssExtractPlugin from "mini-css-extract-plugin"
-import { ModuleOptions } from "webpack"
+import { ModuleOptions, runtime } from "webpack"
 import { BuildOptions } from "./types/types"
 import ReactRefreshTypeScript from "react-refresh-typescript"
+import { buildBabelLoader } from "./babel/buildBabelLoader"
 
 export function buildLoaders(options: BuildOptions): ModuleOptions["rules"] {
   const isDev = options.mode === "development"
@@ -50,6 +51,8 @@ export function buildLoaders(options: BuildOptions): ModuleOptions["rules"] {
     ],
   }
 
+  const babelLoader = buildBabelLoader(options)
+
   const svgrLoader = {
     test: /\.svg$/i,
     use: [
@@ -72,5 +75,11 @@ export function buildLoaders(options: BuildOptions): ModuleOptions["rules"] {
     ],
   }
 
-  return [scssLoader, tsLoader, assetLoader, svgrLoader]
+  return [
+    scssLoader,
+    tsLoader,
+    // babelLoader,
+    assetLoader,
+    svgrLoader,
+  ]
 }
